@@ -4,7 +4,23 @@ const db = require('../../data/db-config.js')
 const router = express.Router()
 
 router.get('/', (req, res, next) => {
-    
+    db('cars')
+        .then(cars => {
+            res.json(cars)
+        })
+        .catch(next)
+})
+
+router.post('/', (req, res, next) => {
+    db('cars').insert(req.body)
+        .then(vins => {
+            db('cars').where({vin: vins[0]})
+            .then(newCar => {
+                res.status(201).json(newCar)
+            })
+            .catch(next)
+        })
+        .catch(next)
 })
 
 
